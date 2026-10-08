@@ -1,0 +1,121 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ActionButton — 8 trạng thái (STA-01) chuẩn 9Pay Fintech (Nút bo tròn pill)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  --btn-bg:  var(--accent);
+  --btn-ink: oklch(0.99 0.004 152);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0 1.85rem;
+
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  background: var(--btn-bg);
+  color: var(--btn-ink);
+
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+
+  /* MOT-02 — chỉ định thuộc tính cụ thể */
+  transition:
+    transform 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 160ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 160ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* SRF-01 — bóng đa tầng spread âm */
+  box-shadow:
+    0 1px 2px -1px oklch(0.655 0.172 152.5 / 0.30),
+    0 8px 20px -6px oklch(0.655 0.172 152.5 / 0.40);
+}
+
+/* ── 2. hover ────────────────────────────────────────────────────────────── */
+.btn:hover:not(:disabled) {
+  --btn-bg: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow:
+    0 2px 4px -2px oklch(0.655 0.172 152.5 / 0.35),
+    0 12px 28px -8px oklch(0.655 0.172 152.5 / 0.50);
+}
+
+/* ── 3. focus-visible ────────────────────────────────────────────────────── */
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ── 4. active ───────────────────────────────────────────────────────────── */
+.btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.985);
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.1),
+    0 1px 2px -1px oklch(0.655 0.172 152.5 / 0.30);
+}
+
+/* ── 5. disabled ─────────────────────────────────────────────────────────── */
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  filter: saturate(0.4);
+  box-shadow: none;
+}
+
+/* ── 6. loading ──────────────────────────────────────────────────────────── */
+.btn[data-state='loading'] { cursor: progress; }
+.btn[data-state='loading'] .btn__label { opacity: 0; }
+
+.btn__spinner {
+  position: absolute;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2.5px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 640ms linear infinite;
+}
+
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* ── 7. error ────────────────────────────────────────────────────────────── */
+.btn[data-state='error'] {
+  --btn-bg: var(--danger);
+  color: oklch(0.99 0.005 152);
+  outline: 2px solid oklch(0.585 0.190 25 / 0.40);
+  outline-offset: 2px;
+}
+
+/* ── 8. success ──────────────────────────────────────────────────────────── */
+.btn[data-state='success'] {
+  --btn-bg: var(--success);
+  color: oklch(0.99 0.005 152);
+}
+
+/* ── Biến thể Ghost / Outline 9Pay ────────────────────────────────────────── */
+.btn[data-variant='ghost'] {
+  --btn-bg: oklch(0.655 0.172 152.5 / 0.06);
+  --btn-ink: var(--accent);
+  border: 1.5px solid var(--accent);
+  box-shadow: none;
+}
+
+.btn[data-variant='ghost']:hover:not(:disabled) {
+  --btn-bg: oklch(0.655 0.172 152.5 / 0.12);
+  color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px oklch(0.655 0.172 152.5 / 0.12),
+    0 4px 16px -4px oklch(0.655 0.172 152.5 / 0.20);
+}

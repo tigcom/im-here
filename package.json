@@ -1,0 +1,11 @@
+{
+  "name": "im-here",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Im-Here — Nền tảng Crowdsourced Field Verification & Data Collection (WeGoLook / Shepper phong cách 9Pay Fintech)",
+  "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "audit": "node C:/Users/GIGABYTE/.agent-rules/high-end-landing/scripts/anti-slop-audit.mjs apps/web"
+  }
+}
