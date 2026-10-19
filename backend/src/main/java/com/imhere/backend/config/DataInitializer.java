@@ -254,16 +254,16 @@ public class DataInitializer implements CommandLineRunner {
                     .balance(walletBalance)
                     .escrowBalance(BigDecimal.ZERO)
                     .build();
-            walletRepository.save(w);
+            Wallet savedWallet = walletRepository.saveAndFlush(w);
 
             Transaction tx = Transaction.builder()
-                    .wallet(w)
+                    .wallet(savedWallet)
                     .amount(walletBalance)
                     .type(TransactionType.DEPOSIT)
                     .status(TransactionStatus.SUCCESS)
                     .description("Nạp tiền ban đầu mở tài khoản")
                     .build();
-            transactionRepository.save(tx);
+            transactionRepository.saveAndFlush(tx);
 
             return saved;
         });
@@ -298,9 +298,9 @@ public class DataInitializer implements CommandLineRunner {
         walletRepository.findByUserId(client.getId()).ifPresent(w -> {
             if (status != TaskStatus.APPROVED) {
                 w.setEscrowBalance(w.getEscrowBalance().add(reward));
-                walletRepository.save(w);
+                Wallet updatedWallet = walletRepository.saveAndFlush(w);
                 transactionRepository.save(Transaction.builder()
-                        .wallet(w)
+                        .wallet(updatedWallet)
                         .amount(reward)
                         .type(TransactionType.ESCROW_HOLD)
                         .status(TransactionStatus.SUCCESS)
