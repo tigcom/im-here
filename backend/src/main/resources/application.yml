@@ -1,0 +1,60 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: imhere-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/imhere_db}
+    username: ${SPRING_DATASOURCE_USERNAME:imhere_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:imhere_secret}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      ssl:
+        enabled: ${REDIS_SSL:false}
+      timeout: 3000ms
+  jpa:
+    hibernate:
+      ddl-auto: ${HIBERNATE_DDL_AUTO:update}
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Supabase Storage Configuration (Server-Side Service Role Key for Private Storage)
+supabase:
+  storage:
+    url: ${SUPABASE_URL:}
+    service-role-key: ${SUPABASE_SERVICE_ROLE_KEY:}
+    kyc-bucket: ${SUPABASE_KYC_BUCKET:imhere-kyc-private}
+    evidence-bucket: ${SUPABASE_EVIDENCE_BUCKET:imhere-evidence-private}
+    signed-url-expires-in-seconds: ${SUPABASE_SIGNED_URL_EXPIRES:900} # 15 minutes default
+
+# JWT Settings
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+
+# SpringDoc OpenAPI / Swagger UI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha

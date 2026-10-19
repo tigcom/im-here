@@ -1,0 +1,54 @@
+services:
+  # 1. PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: imhere-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-imhere_db}
+      POSTGRES_USER: ${POSTGRES_USER:-imhere_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-imhere_secret}
+    ports:
+      - "5432:5432"
+    volumes:
+      - imhere_postgres_data:/var/lib/postgresql/data
+
+  # 2. Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: imhere-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - imhere_redis_data:/data
+
+  # 3. Spring Boot Backend (Chạy thử Docker cục bộ trước khi deploy Render)
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    container_name: imhere-backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-imhere_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-imhere_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-imhere_secret}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      SUPABASE_STORAGE_BUCKET: ${SUPABASE_STORAGE_BUCKET:-imhere-uploads}
+      CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:8080,https://*.vercel.app"
+
+volumes:
+  imhere_postgres_data:
+    name: imhere_postgres_data
+  imhere_redis_data:
+    name: imhere_redis_data
