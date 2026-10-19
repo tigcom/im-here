@@ -547,6 +547,13 @@ export default function LookerApp() {
 
   const isKycApproved = currentUser?.kycStatus === 'DA_DUYET';
 
+  useEffect(() => {
+    // Tài khoản Looker mới tạo chưa nộp hồ sơ xác thực bắt buộc chuyển sang Onboarding
+    if (currentUser && currentUser.kycStatus === 'CHUA_NOP') {
+      router.push('/looker/onboarding');
+    }
+  }, [currentUser, router]);
+
   const handleAcceptTask = async (task) => {
     if (!task) return;
     if (!isKycApproved) {

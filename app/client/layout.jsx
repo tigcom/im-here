@@ -25,6 +25,7 @@ import useNotifications from '@/hooks/useNotifications';
 import { formatVnd } from '@/lib/format';
 import { HIRER_TYPE } from '@/lib/constants';
 import api from '@/lib/api';
+import ClientKycGate from '@/components/kyc/ClientKycGate';
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -34,8 +35,8 @@ export default function ClientLayout({ children }) {
 
   const { unreadCount } = useNotifications(currentUser?.id);
   const isIndividual = currentUser?.hirerType === HIRER_TYPE.INDIVIDUAL;
-  // BRD chỉ yêu cầu KYC với người nhận việc; người đăng tin vẫn được dùng luồng thuê việc.
-  const isKycApproved = true;
+  // Bắt buộc xác thực KYC với mọi tài khoản Người Thuê / Doanh nghiệp
+  const isKycApproved = currentUser?.kycStatus === 'DA_DUYET';
 
   useEffect(() => {
     if (ready && !currentUser) {
@@ -326,7 +327,11 @@ export default function ClientLayout({ children }) {
 
         {/* Dynamic page content — Bắt buộc xác thực hồ sơ (KYC Gate) */}
         <main className={`flex-1 p-4 sm:p-8 min-w-0 ${!isKycApproved ? 'bg-paper-100/60' : ''}`}>
-          {children}
+          {isKycApproved ? (
+            children
+          ) : (
+            <ClientKycGate onApproved={() => window.location.reload()} />
+          )}
         </main>
       </div>
     </div>

@@ -49,6 +49,18 @@ public class TaskServiceImpl implements TaskService {
             throw new CustomException("Tài khoản của bạn đã bị khóa, không thể đăng nhiệm vụ mới", HttpStatus.FORBIDDEN);
         }
 
+        if (client.getKycStatus() != com.imhere.backend.modules.user.KycStatus.DA_DUYET) {
+            String reason = "Tài khoản của bạn chưa được duyệt hồ sơ định danh (KYC).";
+            if (client.getKycStatus() == com.imhere.backend.modules.user.KycStatus.CHO_DUYET) {
+                reason = "Hồ sơ xác thực định danh của bạn đang chờ Admin xét duyệt. Vui lòng quay lại sau khi hồ sơ được phê duyệt.";
+            } else if (client.getKycStatus() == com.imhere.backend.modules.user.KycStatus.TU_CHOI) {
+                reason = "Hồ sơ định danh của bạn đã bị từ chối. Vui lòng nộp lại hồ sơ trước khi đăng nhiệm vụ.";
+            } else {
+                reason = "Bạn chưa nộp hồ sơ xác thực định danh (KYC). Vui lòng hoàn tất nộp hồ sơ để mở khóa quyền đăng tin.";
+            }
+            throw new CustomException(reason, HttpStatus.FORBIDDEN);
+        }
+
         Task task = Task.builder()
                 .client(client)
                 .title(request.getTitle())
