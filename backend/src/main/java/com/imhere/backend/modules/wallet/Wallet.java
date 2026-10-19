@@ -23,7 +23,8 @@ public class Wallet {
     private Long id;
 
     @Version
-    private Long version;
+    @Builder.Default
+    private Long version = 0L;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
